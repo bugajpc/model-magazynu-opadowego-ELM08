@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Model 12: Magazyn Opadowy - Interaktywny Podgląd 3D (Poprawiona Geometria Bezszczelinowa)</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: rgba(30, 41, 59, 0.88);
+      --border: #334155;
+      --accent: #38bdf8;
+      --accent-hover: #0ea5e9;
+      --green: #22c55e;
+      --blue: #3b82f6;
+      --red: #ef4444;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+    }
+    #viewport {
+      flex: 1;
+      position: relative;
+      outline: none;
+    }
+    #sidebar {
+      width: 380px;
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      border-left: 1px solid var(--border);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: auto;
+      z-index: 10;
+      box-shadow: -8px 0 25px rgba(0,0,0,0.3);
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .badge-fixed {
+      background: rgba(34, 197, 94, 0.15);
+      color: var(--green);
+    }
+    h1 { font-size: 22px; font-weight: 700; line-height: 1.3; }
+    .subtitle { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
+    .section-title {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.8px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+    }
+    .control-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+    .control-row:last-child { margin-bottom: 0; }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 22px;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #475569; transition: .3s; border-radius: 22px;
+    }
+    .slider:before {
+      position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px;
+      background-color: white; transition: .3s; border-radius: 50%;
+    }
+    input:checked + .slider { background-color: var(--accent); }
+    input:checked + .slider:before { transform: translateX(18px); }
+    
+    .range-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .range-group label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+    }
+    input[type=range] {
+      width: 100%;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+    
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--accent);
+      color: #0f172a;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      width: 100%;
+    }
+    .btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
+    .btn-secondary {
+      background: #334155;
+      color: var(--text);
+    }
+    .btn-secondary:hover { background: #475569; }
+    .btn-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    
+    .table-params {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    .table-params td {
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .table-params td:last-child {
+      text-align: right;
+      font-weight: 600;
+      color: var(--accent);
+    }
+    
+    .overlay-info {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 18px;
+      font-size: 13px;
+      pointer-events: none;
+      z-index: 5;
+    }
+    .overlay-info h3 { font-size: 14px; color: var(--accent); margin-bottom: 4px; }
+    .overlay-legend {
+      display: flex;
+      gap: 16px;
+      margin-top: 6px;
+      font-size: 12px;
+    }
+    .legend-item { display: flex; align-items: center; gap: 6px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+
+  <div id="viewport">
+    <div class="overlay-info">
+      <h3>Magazyn Opadowy (Model 12)</h3>
+      <div style="color:var(--green); font-weight:600; margin:2px 0;">Geometria bezszczelinowa (Zero Gap) – kąt rynny i wspornika = 45.0°</div>
+      <div class="overlay-legend">
+        <div class="legend-item"><span class="dot" style="background:#3b82f6;"></span> Podstawa (32 mm)</div>
+        <div class="legend-item"><span class="dot" style="background:#22c55e;"></span> Rynna zjazdowa (45°)</div>
+        <div class="legend-item"><span class="dot" style="background:#ef4444;"></span> Detal 30×30×30 mm</div>
+        <div class="legend-item"><span class="dot" style="background:#fbbf24;"></span> Punkt 60 mm</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="sidebar">
+    <div>
+      <span class="badge badge-fixed">Poprawiona Geometria</span>
+      <h1>Podajnik Detali</h1>
+      <p class="subtitle">Wyeliminowano szczelinę. Wspornik, dno rynny i magazyn tworzą jednolity lity korpus o wspólnym kącie 45.0°.</p>
+    </div>
+
+    <!-- Widok i Animacja -->
+    <div>
+      <div class="section-title">Widok & Animacja</div>
+      <div class="card">
+        <div class="range-group" style="margin-top:0;">
+          <label><span>Rozstrzelenie części (Exploded view)</span> <span id="explode-val">0 mm</span></label>
+          <input type="range" id="explode-slider" min="0" max="60" value="0">
+        </div>
+        <div style="margin-top: 12px;">
+          <button class="btn btn-secondary" id="btn-feed">🎲 Symuluj zsuw kostki (Grawitacja)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Warstwy modelu -->
+    <div>
+      <div class="section-title">Widoczność elementów</div>
+      <div class="card">
+        <div class="control-row">
+          <span>Podstawa (Niebieska)</span>
+          <label class="switch"><input type="checkbox" id="toggle-base" checked><span class="slider"></span></label>
+        </div>
+        <div class="control-row">
+          <span>Rynna zjazdowa (Zielona)</span>
+          <label class="switch"><input type="checkbox" id="toggle-chute" checked><span class="slider"></span></label>
+        </div>
+        <div class="control-row">
+          <span>Detal manipulacyjny (Kostka)</span>
+          <label class="switch"><input type="checkbox" id="toggle-cube" checked><span class="slider"></span></label>
+        </div>
+        <div class="control-row">
+          <span>Kolejka detali w rynnie</span>
+          <label class="switch"><input type="checkbox" id="toggle-queue" checked><span class="slider"></span></label>
+        </div>
+        <div class="control-row">
+          <span>Czujnik zbliżeniowy M12</span>
+          <label class="switch"><input type="checkbox" id="toggle-sensor" checked><span class="slider"></span></label>
+        </div>
+        <div class="control-row">
+          <span>Wektor dojazdu 60 mm (Robot)</span>
+          <label class="switch"><input type="checkbox" id="toggle-approach" checked><span class="slider"></span></label>
+        </div>
+        <div class="control-row">
+          <span>Siatka stołu roboczego</span>
+          <label class="switch"><input type="checkbox" id="toggle-grid" checked><span class="slider"></span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pomiary inżynierskie -->
+    <div>
+      <div class="section-title">Parametry techniczne</div>
+      <div class="card">
+        <table class="table-params">
+          <tr><td>Kąt nachylenia zsuwni</td><td>45.0°</td></tr>
+          <tr><td>Kąt wspornika korpusu</td><td>45.0° (zero-gap)</td></tr>
+          <tr><td>Wymiary detalu (kostki)</td><td>30.0 × 30.0 × 30.0 mm</td></tr>
+          <tr><td>Odległość najazdu chwytaka</td><td>60.0 mm</td></tr>
+          <tr><td>Wysokość całkowita</td><td>183.3 mm</td></tr>
+          <tr><td>Wysokość cokołu podstawy</td><td>32.0 mm</td></tr>
+          <tr><td>Wymiary kołnierza montażowego</td><td>144 × 68 × 4.0 mm</td></tr>
+          <tr><td>Otwory montażowe (stół)</td><td>6 × ⌀ 5.5 mm (M5)</td></tr>
+          <tr><td>Średnica gniazda czujnika</td><td>⌀ 12.5 mm (M12)</td></tr>
+          <tr><td>Szerokość wewnętrzna koryta</td><td>31.5 mm (luz 0.75mm)</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Pobieranie plików -->
+    <div>
+      <div class="section-title">Pliki gotowe do druku</div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <a class="btn" href="magazyn_opadowy_calosc.stl" download>⬇️ Pobierz: Całość 1 wydruk (STL)</a>
+        <div class="btn-grid">
+          <a class="btn btn-secondary" href="01_podstawa_dolna.stl" download>Podstawa (STL)</a>
+          <a class="btn btn-secondary" href="02_rynna_magazynu.stl" download>Rynna (STL)</a>
+        </div>
+        <div class="btn-grid">
+          <a class="btn btn-secondary" href="03_detal_kostka_30mm.stl" download>Kostka 30mm (STL)</a>
+          <a class="btn btn-secondary" href="magazyn_opadowy.3mf" download>Bambu Studio (3MF)</a>
+        </div>
+        <a class="btn btn-secondary" href="magazyn_opadowy.scad" download>📐 Źródło OpenSCAD (SCAD)</a>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const container = document.getElementById('viewport');
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0f172a);
+
+    const camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 1, 1000);
+    camera.position.set(-180, 220, 260);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    container.appendChild(renderer.domElement);
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.target.set(40, 80, 0);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444455, 0.7);
+    scene.add(hemiLight);
+
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.9);
+    dirLight.position.set(-100, 250, 150);
+    dirLight.castShadow = true;
+    dirLight.shadow.mapSize.width = 2048;
+    dirLight.shadow.mapSize.height = 2048;
+    const d = 150;
+    dirLight.shadow.camera.left = -d; dirLight.shadow.camera.right = d;
+    dirLight.shadow.camera.top = d; dirLight.shadow.camera.bottom = -d;
+    scene.add(dirLight);
+
+    const fillLight = new THREE.DirectionalLight(0x38bdf8, 0.3);
+    fillLight.position.set(150, 100, -100);
+    scene.add(fillLight);
+
+    const grid = new THREE.GridHelper(300, 30, 0x334155, 0x1e293b);
+    grid.position.y = 0;
+    scene.add(grid);
+
+    // Grupy
+    const baseGroup = new THREE.Group();
+    const chuteGroup = new THREE.Group();
+    const cubeGroup = new THREE.Group();
+    const queueGroup = new THREE.Group();
+    const sensorGroup = new THREE.Group();
+    const approachGroup = new THREE.Group();
+
+    scene.add(baseGroup);
+    scene.add(chuteGroup);
+    scene.add(cubeGroup);
+    scene.add(queueGroup);
+    scene.add(sensorGroup);
+    scene.add(approachGroup);
+
+    const blueMat = new THREE.MeshStandardMaterial({ color: 0x2563eb, roughness: 0.35, metalness: 0.1 });
+    const greenMat = new THREE.MeshStandardMaterial({ color: 0x16a34a, roughness: 0.35, metalness: 0.1 });
+    const redMat = new THREE.MeshStandardMaterial({ color: 0xdc2626, roughness: 0.3, metalness: 0.05 });
+    const blackMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.5, metalness: 0.6 });
+    const brassMat = new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.25, metalness: 0.8 });
+
+    // 1. PODSTAWA
+    const flangeMesh = new THREE.Mesh(new THREE.BoxGeometry(144, 4, 68), blueMat);
+    flangeMesh.position.set(56, 2, 0);
+    flangeMesh.castShadow = true;
+    baseGroup.add(flangeMesh);
+
+    const pedestalMesh = new THREE.Mesh(new THREE.BoxGeometry(110, 28, 50), blueMat);
+    pedestalMesh.position.set(55, 18, 0);
+    pedestalMesh.castShadow = true;
+    baseGroup.add(pedestalMesh);
+
+    const holeMat = new THREE.MeshBasicMaterial({ color: 0x0f172a });
+    const holeGeo = new THREE.CylinderGeometry(2.75, 2.75, 4.2, 16);
+    [[-8, 2, -26], [-8, 2, 26], [56, 2, -26], [56, 2, 26], [120, 2, -26], [120, 2, 26]].forEach(p => {
+      const h = new THREE.Mesh(holeGeo, holeMat);
+      h.position.set(p[0], p[1], p[2]);
+      baseGroup.add(h);
+    });
+
+    // 2. RYNNA ZE WSPORNIKIEM - POPRAWIONA GEOMETRIA BEZSZCZELINOWA
+    // Płyta montażowa dolna: Z=32 do 38 mm
+    const chuteBaseMesh = new THREE.Mesh(new THREE.BoxGeometry(110, 6, 50), greenMat);
+    chuteBaseMesh.position.set(55, 35, 0);
+    chuteBaseMesh.castShadow = true;
+    chuteGroup.add(chuteBaseMesh);
+
+    // Ciągły klin wsporczy o kącie dokładnie 45.0° pod całą szerokością rynny (40.5 mm)
+    // Łączy Z=38 mm bezpośrednio ze spodem dna rynny (Z = X + 41.33)
+    const spineShape = new THREE.Shape();
+    spineShape.moveTo(0, 38);
+    spineShape.lineTo(110, 38);
+    spineShape.lineTo(110, 151.33);
+    spineShape.lineTo(0, 41.33);
+    spineShape.closePath();
+    const spineMesh = new THREE.Mesh(new THREE.ExtrudeGeometry(spineShape, { depth: 40.5, bevelEnabled: false }), greenMat);
+    spineMesh.position.z = -20.25;
+    spineMesh.castShadow = true;
+    chuteGroup.add(spineMesh);
+
+    // Koryto nachylone 45°
+    const chuteAngle = Math.PI / 4;
+    const chuteChannelGroup = new THREE.Group();
+    chuteChannelGroup.position.set(-3, 45.4, 0);
+    chuteChannelGroup.rotation.z = chuteAngle;
+
+    // Dno rynny (155 x 5 x 40.5)
+    const bedMesh = new THREE.Mesh(new THREE.BoxGeometry(155, 5, 40.5), greenMat);
+    bedMesh.position.set(77.5, -2.5, 0);
+    bedMesh.castShadow = true;
+    chuteChannelGroup.add(bedMesh);
+
+    // Zderzak czołowy ze ścianką
+    const stopperMesh = new THREE.Mesh(new THREE.BoxGeometry(6, 37, 40.5), greenMat);
+    stopperMesh.position.set(-3, 13.5, 0);
+    stopperMesh.castShadow = true;
+    chuteChannelGroup.add(stopperMesh);
+
+    // Gniazdo czujnika M12
+    const sensorHoleMesh = new THREE.Mesh(new THREE.CylinderGeometry(6.25, 6.25, 6.2, 24), holeMat);
+    sensorHoleMesh.rotation.z = Math.PI / 2;
+    sensorHoleMesh.position.set(-3, 15, 0);
+    chuteChannelGroup.add(sensorHoleMesh);
+
+    // Ścianki boczne z wycięciem na chwytak
+    [-18, 18].forEach(zPos => {
+      // Strefa chwytania (0..33 mm): wysokość 4 mm (dostęp dla chwytaka)
+      const cMesh = new THREE.Mesh(new THREE.BoxGeometry(33, 4, 4.5), greenMat);
+      cMesh.position.set(16.5, 2, zPos);
+      cMesh.castShadow = true;
+      chuteChannelGroup.add(cMesh);
+
+      // Główna ścianka prowadząca (38..155 mm): pełna wysokość 35 mm
+      const mMesh = new THREE.Mesh(new THREE.BoxGeometry(117, 35, 4.5), greenMat);
+      mMesh.position.set(96.5, 17.5, zPos);
+      mMesh.castShadow = true;
+      chuteChannelGroup.add(mMesh);
+    });
+
+    chuteGroup.add(chuteChannelGroup);
+
+    // 3. DETAL (KOSTKA 30x30x30 mm)
+    const cubeGeo = new THREE.BoxGeometry(30, 30, 30);
+    const cubeMesh = new THREE.Mesh(cubeGeo, redMat);
+    cubeMesh.position.set(15, 15, 0);
+    cubeMesh.castShadow = true;
+    chuteChannelGroup.add(cubeMesh);
+
+    // 4. KOLEJKA DETALI (BUFOR W RYNIE)
+    [1, 2, 3].forEach(idx => {
+      const qMesh = new THREE.Mesh(cubeGeo, redMat);
+      qMesh.position.set(15 + idx * 30.5, 15, 0);
+      qMesh.castShadow = true;
+      queueGroup.add(qMesh);
+    });
+    chuteChannelGroup.add(queueGroup);
+
+    // 5. CZUJNIK M12
+    const sensorBody = new THREE.Mesh(new THREE.CylinderGeometry(6, 6, 45, 24), blackMat);
+    sensorBody.rotation.z = Math.PI / 2;
+    sensorBody.position.set(-25, 15, 0);
+    const nutMesh = new THREE.Mesh(new THREE.CylinderGeometry(9, 9, 5, 6), brassMat);
+    nutMesh.rotation.z = Math.PI / 2;
+    nutMesh.position.set(-15, 15, 0);
+    sensorGroup.add(sensorBody);
+    sensorGroup.add(nutMesh);
+    chuteChannelGroup.add(sensorGroup);
+
+    // 6. WEKTOR NAJAZDU 60 mm
+    const pickDot = new THREE.Mesh(new THREE.SphereGeometry(2.5, 16, 16), new THREE.MeshBasicMaterial({ color: 0xef4444 }));
+    pickDot.position.set(15, 30, 0);
+    approachGroup.add(pickDot);
+
+    const appDot = new THREE.Mesh(new THREE.SphereGeometry(3, 16, 16), new THREE.MeshBasicMaterial({ color: 0xfbbf24 }));
+    appDot.position.set(15, 90, 0);
+    approachGroup.add(appDot);
+
+    const lineGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(15, 30, 0), new THREE.Vector3(15, 90, 0)]);
+    const approachLine = new THREE.Line(lineGeo, new THREE.LineDashedMaterial({ color: 0xfbbf24, dashSize: 4, gapSize: 2 }));
+    approachLine.computeLineDistances();
+    approachGroup.add(approachLine);
+    chuteChannelGroup.add(approachGroup);
+
+    // Rozstrzelenie części
+    const explodeSlider = document.getElementById('explode-slider');
+    const explodeVal = document.getElementById('explode-val');
+    explodeSlider.addEventListener('input', (e) => {
+      const val = parseFloat(e.target.value);
+      explodeVal.textContent = val + ' mm';
+      chuteGroup.position.y = val;
+    });
+
+    document.getElementById('toggle-base').addEventListener('change', e => baseGroup.visible = e.target.checked);
+    document.getElementById('toggle-chute').addEventListener('change', e => chuteGroup.visible = e.target.checked);
+    document.getElementById('toggle-cube').addEventListener('change', e => cubeMesh.visible = e.target.checked);
+    document.getElementById('toggle-queue').addEventListener('change', e => queueGroup.visible = e.target.checked);
+    document.getElementById('toggle-sensor').addEventListener('change', e => sensorGroup.visible = e.target.checked);
+    document.getElementById('toggle-approach').addEventListener('change', e => approachGroup.visible = e.target.checked);
+    document.getElementById('toggle-grid').addEventListener('change', e => grid.visible = e.target.checked);
+
+    let isFeeding = false;
+    let feedU = 140;
+    const testFeedCube = new THREE.Mesh(cubeGeo, redMat);
+    testFeedCube.visible = false;
+    chuteChannelGroup.add(testFeedCube);
+
+    document.getElementById('btn-feed').addEventListener('click', () => {
+      if (isFeeding) return;
+      isFeeding = true;
+      feedU = 140;
+      testFeedCube.visible = true;
+      testFeedCube.position.set(feedU, 15, 0);
+    });
+
+    window.addEventListener('resize', () => {
+      camera.aspect = container.clientWidth / container.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(container.clientWidth, container.clientHeight);
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      if (isFeeding) {
+        feedU -= 4.0;
+        testFeedCube.position.set(feedU, 15, 0);
+        if (feedU <= 15 + 3 * 30.5) {
+          isFeeding = false;
+          testFeedCube.visible = false;
+        }
+      }
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</body>
+</html>
