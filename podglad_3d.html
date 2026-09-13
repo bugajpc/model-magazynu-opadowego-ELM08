@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Model 12: Magazyn Opadowy - Interaktywny Podgląd 3D (Poprawiona Geometria Bezszczelinowa)</title>
+  <title>Model 12: Magazyn Opadowy - Interaktywny Podgląd 3D (Wersja z 2 Podstawami i Otworem ⌀18)</title>
   <style>
     :root {
       --bg: #0f172a;
@@ -31,7 +31,7 @@
       outline: none;
     }
     #sidebar {
-      width: 380px;
+      width: 400px;
       background: var(--card-bg);
       backdrop-filter: blur(16px);
       border-left: 1px solid var(--border);
@@ -60,7 +60,7 @@
       color: var(--green);
     }
     h1 { font-size: 22px; font-weight: 700; line-height: 1.3; }
-    .subtitle { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
+    .subtitle { font-size: 13px; color: var(--text-muted); line-height: 1.4; margin-top: 4px; }
     .section-title {
       font-size: 13px;
       font-weight: 600;
@@ -196,21 +196,21 @@
   <div id="viewport">
     <div class="overlay-info">
       <h3>Magazyn Opadowy (Model 12)</h3>
-      <div style="color:var(--green); font-weight:600; margin:2px 0;">Geometria bezszczelinowa (Zero Gap) – kąt rynny i wspornika = 45.0°</div>
+      <div style="color:var(--green); font-weight:600; margin:2px 0;">2 Podstawy (110×30×70 mm) • Otwór czujnika ⌀18 mm • Rynna 40.5 mm</div>
       <div class="overlay-legend">
-        <div class="legend-item"><span class="dot" style="background:#3b82f6;"></span> Podstawa (32 mm)</div>
-        <div class="legend-item"><span class="dot" style="background:#22c55e;"></span> Rynna zjazdowa (45°)</div>
+        <div class="legend-item"><span class="dot" style="background:#3b82f6;"></span> 2 Podstawy (Z=70 mm)</div>
+        <div class="legend-item"><span class="dot" style="background:#22c55e;"></span> Rynna zjazdowa (40.5 mm)</div>
         <div class="legend-item"><span class="dot" style="background:#ef4444;"></span> Detal 30×30×30 mm</div>
-        <div class="legend-item"><span class="dot" style="background:#fbbf24;"></span> Punkt 60 mm</div>
+        <div class="legend-item"><span class="dot" style="background:#64748b;"></span> Czujnik ⌀18 (M18)</div>
       </div>
     </div>
   </div>
 
   <div id="sidebar">
     <div>
-      <span class="badge badge-fixed">Poprawiona Geometria</span>
+      <span class="badge badge-fixed">Wersja zaktualizowana</span>
       <h1>Podajnik Detali</h1>
-      <p class="subtitle">Wyeliminowano szczelinę. Wspornik, dno rynny i magazyn tworzą jednolity lity korpus o wspólnym kącie 45.0°.</p>
+      <p class="subtitle">Dwie niezależne podpory 110×30×70 mm w rozstawie 90×90 mm. Rynna o stałej szerokości 40.5 mm z otworem ⌀18 mm na czujnik zbliżeniowy.</p>
     </div>
 
     <!-- Widok i Animacja -->
@@ -232,7 +232,7 @@
       <div class="section-title">Widoczność elementów</div>
       <div class="card">
         <div class="control-row">
-          <span>Podstawa (Niebieska)</span>
+          <span>Podstawa przednia & tylna (Niebieskie)</span>
           <label class="switch"><input type="checkbox" id="toggle-base" checked><span class="slider"></span></label>
         </div>
         <div class="control-row">
@@ -248,7 +248,7 @@
           <label class="switch"><input type="checkbox" id="toggle-queue" checked><span class="slider"></span></label>
         </div>
         <div class="control-row">
-          <span>Czujnik zbliżeniowy M12</span>
+          <span>Czujnik zbliżeniowy M18 (⌀18 mm)</span>
           <label class="switch"><input type="checkbox" id="toggle-sensor" checked><span class="slider"></span></label>
         </div>
         <div class="control-row">
@@ -264,19 +264,23 @@
 
     <!-- Pomiary inżynierskie -->
     <div>
-      <div class="section-title">Parametry techniczne</div>
+      <div class="section-title">Parametry techniczne (Wg rysunków)</div>
       <div class="card">
         <table class="table-params">
+          <tr><td>Liczba podstaw montażowych</td><td>2 szt. (niezależne)</td></tr>
+          <tr><td>Wymiary pojedynczej podstawy</td><td>110 × 30 × 70 mm</td></tr>
+          <tr><td>Wymiary środkowego słupa</td><td>70 × 30 × 70 mm</td></tr>
+          <tr><td>Wymiary uszu montażowych</td><td>2 × (20 × 30 × 10 mm)</td></tr>
+          <tr><td>Otwory montażowe w uszach</td><td>2 otw. ⌀ 7.0 mm (M6)</td></tr>
+          <tr><td>Rozstaw otworów wzdłuż podstawy</td><td>90.0 mm</td></tr>
+          <tr><td>Asymetria otworu (Wymiar A)</td><td>10.0 mm (od krawędzi)</td></tr>
+          <tr><td>Siatka otworów do stołu (złożenie)</td><td>90.0 × 90.0 mm (4 otw.)</td></tr>
+          <tr><td>Skrajny obrys podstaw (złożenie)</td><td>110 × 110 mm</td></tr>
+          <tr><td>Szerokość zewnętrzna rynny</td><td>40.5 mm (jednolita)</td></tr>
+          <tr><td>Średnica gniazda czujnika</td><td>⌀ 18.0 mm (M18)</td></tr>
           <tr><td>Kąt nachylenia zsuwni</td><td>45.0°</td></tr>
-          <tr><td>Kąt wspornika korpusu</td><td>45.0° (zero-gap)</td></tr>
           <tr><td>Wymiary detalu (kostki)</td><td>30.0 × 30.0 × 30.0 mm</td></tr>
-          <tr><td>Odległość najazdu chwytaka</td><td>60.0 mm</td></tr>
-          <tr><td>Wysokość całkowita</td><td>183.3 mm</td></tr>
-          <tr><td>Wysokość cokołu podstawy</td><td>32.0 mm</td></tr>
-          <tr><td>Wymiary kołnierza montażowego</td><td>144 × 68 × 4.0 mm</td></tr>
-          <tr><td>Otwory montażowe (stół)</td><td>6 × ⌀ 5.5 mm (M5)</td></tr>
-          <tr><td>Średnica gniazda czujnika</td><td>⌀ 12.5 mm (M12)</td></tr>
-          <tr><td>Szerokość wewnętrzna koryta</td><td>31.5 mm (luz 0.75mm)</td></tr>
+          <tr><td>Wysokość całkowita złożenia</td><td>217.8 mm</td></tr>
         </table>
       </div>
     </div>
@@ -285,14 +289,14 @@
     <div>
       <div class="section-title">Pliki gotowe do druku</div>
       <div style="display: flex; flex-direction: column; gap: 8px;">
-        <a class="btn" href="magazyn_opadowy_calosc.stl" download>⬇️ Pobierz: Całość 1 wydruk (STL)</a>
+        <a class="btn" href="magazyn_opadowy_calosc.stl" download>⬇️ Pobierz: Całość złożenie (STL)</a>
         <div class="btn-grid">
-          <a class="btn btn-secondary" href="01_podstawa_dolna.stl" download>Podstawa (STL)</a>
-          <a class="btn btn-secondary" href="02_rynna_magazynu.stl" download>Rynna (STL)</a>
+          <a class="btn btn-secondary" href="01_podstawa.stl" download>Podstawa (x2) (STL)</a>
+          <a class="btn btn-secondary" href="02_rynna_magazynu.stl" download>Rynna ⌀18 (STL)</a>
         </div>
         <div class="btn-grid">
           <a class="btn btn-secondary" href="03_detal_kostka_30mm.stl" download>Kostka 30mm (STL)</a>
-          <a class="btn btn-secondary" href="magazyn_opadowy.3mf" download>Bambu Studio (3MF)</a>
+          <a class="btn btn-secondary" href="magazyn_opadowy.3mf" download>Projekt 3MF</a>
         </div>
         <a class="btn btn-secondary" href="magazyn_opadowy.scad" download>📐 Źródło OpenSCAD (SCAD)</a>
       </div>
@@ -306,7 +310,7 @@
     scene.background = new THREE.Color(0x0f172a);
 
     const camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 1, 1000);
-    camera.position.set(-180, 220, 260);
+    camera.position.set(-200, 260, 280);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(container.clientWidth, container.clientHeight);
@@ -315,7 +319,7 @@
     container.appendChild(renderer.domElement);
 
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.target.set(40, 80, 0);
+    controls.target.set(40, 90, 0);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
 
@@ -323,16 +327,16 @@
     scene.add(hemiLight);
 
     const dirLight = new THREE.DirectionalLight(0xffffff, 0.9);
-    dirLight.position.set(-100, 250, 150);
+    dirLight.position.set(-100, 300, 150);
     dirLight.castShadow = true;
     dirLight.shadow.mapSize.width = 2048;
     dirLight.shadow.mapSize.height = 2048;
-    const d = 150;
+    const d = 180;
     dirLight.shadow.camera.left = -d; dirLight.shadow.camera.right = d;
     dirLight.shadow.camera.top = d; dirLight.shadow.camera.bottom = -d;
     scene.add(dirLight);
 
-    const fillLight = new THREE.DirectionalLight(0x38bdf8, 0.3);
+    const fillLight = new THREE.DirectionalLight(0x38bdf8, 0.35);
     fillLight.position.set(150, 100, -100);
     scene.add(fillLight);
 
@@ -360,40 +364,65 @@
     const redMat = new THREE.MeshStandardMaterial({ color: 0xdc2626, roughness: 0.3, metalness: 0.05 });
     const blackMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.5, metalness: 0.6 });
     const brassMat = new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.25, metalness: 0.8 });
-
-    // 1. PODSTAWA
-    const flangeMesh = new THREE.Mesh(new THREE.BoxGeometry(144, 4, 68), blueMat);
-    flangeMesh.position.set(56, 2, 0);
-    flangeMesh.castShadow = true;
-    baseGroup.add(flangeMesh);
-
-    const pedestalMesh = new THREE.Mesh(new THREE.BoxGeometry(110, 28, 50), blueMat);
-    pedestalMesh.position.set(55, 18, 0);
-    pedestalMesh.castShadow = true;
-    baseGroup.add(pedestalMesh);
-
     const holeMat = new THREE.MeshBasicMaterial({ color: 0x0f172a });
-    const holeGeo = new THREE.CylinderGeometry(2.75, 2.75, 4.2, 16);
-    [[-8, 2, -26], [-8, 2, 26], [56, 2, -26], [56, 2, 26], [120, 2, -26], [120, 2, 26]].forEach(p => {
-      const h = new THREE.Mesh(holeGeo, holeMat);
-      h.position.set(p[0], p[1], p[2]);
-      baseGroup.add(h);
-    });
 
-    // 2. RYNNA ZE WSPORNIKIEM - POPRAWIONA GEOMETRIA BEZSZCZELINOWA
-    // Płyta montażowa dolna: Z=32 do 38 mm
-    const chuteBaseMesh = new THREE.Mesh(new THREE.BoxGeometry(110, 6, 50), greenMat);
-    chuteBaseMesh.position.set(55, 35, 0);
-    chuteBaseMesh.castShadow = true;
-    chuteGroup.add(chuteBaseMesh);
+    // 1. GENERATOR POJEDYNCZEJ PODSTAWY (110x30x70 mm, uszy 10 mm, otwory ⌀7 mm)
+    function createBaseMesh() {
+      const g = new THREE.Group();
+      
+      // Środkowy słup: 30 mm (X) × 70 mm (Y) × 70 mm (Z w Three.js)
+      // W Three.js: Y to wysokość (Z w CAD), Z to długość w poprzek (Y w CAD), X to wzdłuż rynny (X w CAD)
+      const colMesh = new THREE.Mesh(new THREE.BoxGeometry(30, 70, 70), blueMat);
+      colMesh.position.set(15, 35, 0);
+      colMesh.castShadow = true;
+      g.add(colMesh);
 
+      // Lewe ucho (Z = -45, długość 20 mm w Z, szerokość 30 mm w X, wysokość 10 mm w Y)
+      const ear1 = new THREE.Mesh(new THREE.BoxGeometry(30, 10, 20), blueMat);
+      ear1.position.set(15, 5, -45);
+      ear1.castShadow = true;
+      g.add(ear1);
+
+      // Prawe ucho (Z = +45, długość 20 mm w Z, szerokość 30 mm w X, wysokość 10 mm w Y)
+      const ear2 = new THREE.Mesh(new THREE.BoxGeometry(30, 10, 20), blueMat);
+      ear2.position.set(15, 5, 45);
+      ear2.castShadow = true;
+      g.add(ear2);
+
+      // Otwory montażowe ⌀7 mm (promień 3.5 mm, wysokość 10.2 mm)
+      // Wymiar A = 10 mm od przedniej krawędzi X = 0 (pozycja X = 10 mm)
+      const holeGeo = new THREE.CylinderGeometry(3.5, 3.5, 10.5, 24);
+      const h1 = new THREE.Mesh(holeGeo, holeMat);
+      h1.position.set(10, 5, -45);
+      g.add(h1);
+
+      const h2 = new THREE.Mesh(holeGeo, holeMat);
+      h2.position.set(10, 5, 45);
+      g.add(h2);
+
+      return g;
+    }
+
+    // Podstawa przednia: X w [0, 30], otwory na X = 10 mm, Z = ±45 mm
+    const frontBase = createBaseMesh();
+    frontBase.position.set(0, 0, 0);
+    baseGroup.add(frontBase);
+
+    // Podstawa tylna: obrót o 180° wokół osi Y i przesunięcie do X w [80, 110]
+    // Otwory na X = 100 mm, Z = ±45 mm (rozstaw w X = 90 mm!)
+    const rearBase = createBaseMesh();
+    rearBase.rotation.y = Math.PI;
+    rearBase.position.set(110, 0, 0);
+    baseGroup.add(rearBase);
+
+    // 2. RYNNA ZE WSPORNIKIEM (Szerokość 40.5 mm, bez rozszerzenia, Z bazy = 70 mm)
     // Ciągły klin wsporczy o kącie dokładnie 45.0° pod całą szerokością rynny (40.5 mm)
-    // Łączy Z=38 mm bezpośrednio ze spodem dna rynny (Z = X + 41.33)
+    // Łączy Y=70 mm bezpośrednio ze spodem dna rynny (Y = X + 79.33)
     const spineShape = new THREE.Shape();
-    spineShape.moveTo(0, 38);
-    spineShape.lineTo(110, 38);
-    spineShape.lineTo(110, 151.33);
-    spineShape.lineTo(0, 41.33);
+    spineShape.moveTo(0, 70);
+    spineShape.lineTo(110, 70);
+    spineShape.lineTo(110, 189.33);
+    spineShape.lineTo(0, 79.33);
     spineShape.closePath();
     const spineMesh = new THREE.Mesh(new THREE.ExtrudeGeometry(spineShape, { depth: 40.5, bevelEnabled: false }), greenMat);
     spineMesh.position.z = -20.25;
@@ -403,23 +432,23 @@
     // Koryto nachylone 45°
     const chuteAngle = Math.PI / 4;
     const chuteChannelGroup = new THREE.Group();
-    chuteChannelGroup.position.set(-3, 45.4, 0);
+    chuteChannelGroup.position.set(-3, 83.4, 0);
     chuteChannelGroup.rotation.z = chuteAngle;
 
-    // Dno rynny (155 x 5 x 40.5)
+    // Dno rynny (155 x 5 x 40.5 mm)
     const bedMesh = new THREE.Mesh(new THREE.BoxGeometry(155, 5, 40.5), greenMat);
     bedMesh.position.set(77.5, -2.5, 0);
     bedMesh.castShadow = true;
     chuteChannelGroup.add(bedMesh);
 
-    // Zderzak czołowy ze ścianką
+    // Zderzak czołowy ze ścianką (grubość 6 mm, wysokość 37 mm)
     const stopperMesh = new THREE.Mesh(new THREE.BoxGeometry(6, 37, 40.5), greenMat);
     stopperMesh.position.set(-3, 13.5, 0);
     stopperMesh.castShadow = true;
     chuteChannelGroup.add(stopperMesh);
 
-    // Gniazdo czujnika M12
-    const sensorHoleMesh = new THREE.Mesh(new THREE.CylinderGeometry(6.25, 6.25, 6.2, 24), holeMat);
+    // Gniazdo czujnika ⌀18 mm (promień 9.0 mm) w zderzaku
+    const sensorHoleMesh = new THREE.Mesh(new THREE.CylinderGeometry(9.0, 9.0, 6.4, 32), holeMat);
     sensorHoleMesh.rotation.z = Math.PI / 2;
     sensorHoleMesh.position.set(-3, 15, 0);
     chuteChannelGroup.add(sensorHoleMesh);
@@ -457,15 +486,22 @@
     });
     chuteChannelGroup.add(queueGroup);
 
-    // 5. CZUJNIK M12
-    const sensorBody = new THREE.Mesh(new THREE.CylinderGeometry(6, 6, 45, 24), blackMat);
+    // 5. CZUJNIK ZBLIŻENIOWY M18 (Średnica 18 mm)
+    const sensorBody = new THREE.Mesh(new THREE.CylinderGeometry(9, 9, 55, 32), blackMat);
     sensorBody.rotation.z = Math.PI / 2;
-    sensorBody.position.set(-25, 15, 0);
-    const nutMesh = new THREE.Mesh(new THREE.CylinderGeometry(9, 9, 5, 6), brassMat);
+    sensorBody.position.set(-30, 15, 0);
+    
+    const nutMesh = new THREE.Mesh(new THREE.CylinderGeometry(12, 12, 5, 6), brassMat);
     nutMesh.rotation.z = Math.PI / 2;
-    nutMesh.position.set(-15, 15, 0);
+    nutMesh.position.set(-16, 15, 0);
+
+    const tipMesh = new THREE.Mesh(new THREE.CylinderGeometry(8, 8, 5, 24), brassMat);
+    tipMesh.rotation.z = Math.PI / 2;
+    tipMesh.position.set(-4, 15, 0);
+
     sensorGroup.add(sensorBody);
     sensorGroup.add(nutMesh);
+    sensorGroup.add(tipMesh);
     chuteChannelGroup.add(sensorGroup);
 
     // 6. WEKTOR NAJAZDU 60 mm
@@ -483,13 +519,15 @@
     approachGroup.add(approachLine);
     chuteChannelGroup.add(approachGroup);
 
-    // Rozstrzelenie części
+    // Rozstrzelenie części (Exploded view)
     const explodeSlider = document.getElementById('explode-slider');
     const explodeVal = document.getElementById('explode-val');
     explodeSlider.addEventListener('input', (e) => {
       const val = parseFloat(e.target.value);
       explodeVal.textContent = val + ' mm';
       chuteGroup.position.y = val;
+      frontBase.position.x = -val * 0.4;
+      rearBase.position.x = 110 + val * 0.4;
     });
 
     document.getElementById('toggle-base').addEventListener('change', e => baseGroup.visible = e.target.checked);
